@@ -1,0 +1,47 @@
+﻿<Window x:Class="HotelServices.Dialogs.ReportDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Формування звіту" Height="500" Width="600"
+         WindowStartupLocation="CenterScreen">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Формування звіту" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
+            <TextBlock Text="Період з:" Width="80" VerticalAlignment="Center"/>
+            <DatePicker x:Name="dpStartDate" Width="120" Margin="5,0,0,0"/>
+            <TextBlock Text="по:" Width="30" VerticalAlignment="Center" Margin="10,0,0,0"/>
+            <DatePicker x:Name="dpEndDate" Width="120" Margin="5,0,0,0"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,10">
+            <TextBlock Text="Тип ресурсу:" Width="80" VerticalAlignment="Center"/>
+            <ComboBox x:Name="cmbResourceType" Width="200" Margin="5,0,0,0" IsEnabled="False"/>
+        </StackPanel>
+
+        <DataGrid x:Name="reportDataGrid" Grid.Row="3" Margin="0,0,0,10" 
+         AutoGenerateColumns="False" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Назва" Binding="{Binding Name}"/>
+                <DataGridTextColumn Header="Статус" Binding="{Binding Status}"/>
+                <DataGridTextColumn Header="Початок" Binding="{Binding StartDate, StringFormat={}{0:dd.MM.yyyy HH:mm}}"/>
+                <DataGridTextColumn Header="Кінець" Binding="{Binding EndDate, StringFormat={}{0:dd.MM.yyyy HH:mm}}"/>
+                <DataGridTextColumn Header="Тривалість (год)" Binding="{Binding OccupancyDuration, StringFormat={}{0:N1}}"/>
+                <DataGridTextColumn Header="Дохід" Binding="{Binding TotalIncome, StringFormat={}{0:N2}}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Сформувати" Click="Generate_Click" Width="100" Margin="0,0,10,0"/>
+            <Button Content="Експорт у PDF" Click="ExportToPdf_Click" Width="100" Margin="0,0,10,0"/>
+            <Button Content="Скасувати" Click="Cancel_Click" Width="80"/>
+        </StackPanel>
+    </Grid>
+</Window>

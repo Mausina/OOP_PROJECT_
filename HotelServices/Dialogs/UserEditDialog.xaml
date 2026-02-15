@@ -1,0 +1,86 @@
+﻿<Window x:Class="HotelServices.UserEditDialog"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Редагування користувача" 
+      Height="500" 
+      Width="450"
+      WindowStartupLocation="CenterScreen"
+      Background="{StaticResource BackgroundColor}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Заголовок -->
+        <Border Grid.Row="0" Padding="15" Background="{StaticResource BackgroundColor}" 
+                BorderBrush="{StaticResource BorderColor}" BorderThickness="0,0,0,1">
+            <TextBlock x:Name="lblTitle" 
+                     Text="Редагування користувача"
+                     Style="{StaticResource DialogHeaderStyle}"/>
+        </Border>
+
+        <!-- Основний вміст -->
+        <Border Grid.Row="1" 
+                Style="{StaticResource ContentBorderStyle}"
+                Margin="15,10">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="20">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Повне ім'я -->
+                    <StackPanel Grid.Row="0">
+                        <TextBlock Text="Повне ім'я:" Style="{StaticResource LabelStyle}"/>
+                        <TextBox x:Name="txtFullName" Style="{StaticResource InputFieldStyle}"/>
+                    </StackPanel>
+
+                    <!-- Логін -->
+                    <StackPanel Grid.Row="1">
+                        <TextBlock Text="Логін:" Style="{StaticResource LabelStyle}"/>
+                        <TextBox x:Name="txtUsername" Style="{StaticResource InputFieldStyle}"/>
+                    </StackPanel>
+
+                    <!-- Пароль -->
+                    <StackPanel Grid.Row="2">
+                        <TextBlock Text="Пароль:" Style="{StaticResource LabelStyle}"/>
+                        <PasswordBox x:Name="txtPassword" Style="{StaticResource PasswordFieldStyle}"/>
+                    </StackPanel>
+
+                    <!-- Роль -->
+                    <StackPanel Grid.Row="3">
+                        <TextBlock Text="Роль:" Style="{StaticResource LabelStyle}"/>
+                        <ComboBox x:Name="cmbRole" Style="{StaticResource ComboBoxStyle}"/>
+                    </StackPanel>
+                </Grid>
+            </ScrollViewer>
+        </Border>
+
+        <!-- Кнопки -->
+        <Border Grid.Row="2" 
+                Style="{StaticResource ContentBorderStyle}"
+                Margin="15,0,15,15">
+            <StackPanel Orientation="Horizontal" 
+                      HorizontalAlignment="Right" 
+                      Margin="10">
+                <Button Content="Зберегти" 
+                      Click="Save_Click" 
+                      Width="120"
+                      Style="{StaticResource RoundedDialogButtonStyle}"/>
+                <Button Content="Скасувати" 
+                      Click="Cancel_Click" 
+                      Width="120"
+                      Style="{StaticResource RoundedDialogButtonStyle}"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>
