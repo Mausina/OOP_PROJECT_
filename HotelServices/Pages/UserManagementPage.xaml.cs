@@ -1,4 +1,4 @@
-﻿using HotelServices.Models;
+using HotelServices.Models;
 using HotelServices.Services;
 using System;
 using System.Collections.Generic;
@@ -13,6 +13,7 @@ namespace HotelServices.Pages
     {
         private readonly User _currentUser;
         private readonly DataService _dataService;
+        private readonly LanguageService _lang = LanguageService.Instance;
         private List<User> _users;
 
         public UserManagementPage(User currentUser)
@@ -22,7 +23,29 @@ namespace HotelServices.Pages
             _dataService = new DataService();
             DataContext = this;
 
+            _lang.LanguageChanged += (s, e) => ApplyLanguage();
+            ApplyLanguage();
             LoadUsers();
+        }
+
+        private void ApplyLanguage()
+        {
+            lblPageTitle.Text      = Strings.Get("Dashboard_Users");
+            btnAddUser.Content     = Strings.Get("Btn_AddUser");
+            btnEdit.Content        = Strings.Get("Btn_Edit");
+            btnDelete.Content      = Strings.Get("Btn_Delete");
+            btnBack.Content        = Strings.Get("Btn_Back");
+            btnResetFilters.Content = Strings.Get("Btn_ResetFilters");
+
+            PlaceholderTextBlock.Text = Strings.Get("Placeholder_Search");
+
+            cmbAllRoles.Content = Strings.Get("Filter_AllRoles");
+            cmbAdmin.Content    = Strings.Get("Filter_Admin");
+            cmbManager.Content  = Strings.Get("Filter_Manager");
+
+            colUsername.Header = Strings.Get("Col_Username");
+            colFullName.Header = Strings.Get("Col_FullName");
+            colRole.Header     = Strings.Get("Col_Role");
         }
 
         private void BackToMain_Click(object sender, RoutedEventArgs e)
@@ -37,13 +60,8 @@ namespace HotelServices.Pages
         private void LoadUsers()
         {
             _users = _dataService.GetAllUsers();
-            if (_users == null)
-            {
-                _users = new List<User>();
-            }
+            if (_users == null) _users = new List<User>();
             usersGrid.ItemsSource = _users;
-
-            // Стилізація даних в таблиці на основі статусу
         }
 
         private void AddUser(object sender, RoutedEventArgs e)
@@ -102,15 +120,11 @@ namespace HotelServices.Pages
             }
         }
 
-        private void UsersGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            // Оновлення інтерфейсу при виборі елемента
-        }
+        private void UsersGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) { }
 
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             ApplyFilters();
-            // Показати або сховати плейсхолдер
             PlaceholderTextBlock.Visibility = string.IsNullOrWhiteSpace(SearchTextBox.Text)
                 ? Visibility.Visible
                 : Visibility.Collapsed;
@@ -136,7 +150,6 @@ namespace HotelServices.Pages
 
             var filtered = _users.AsEnumerable();
 
-            // Пошук за текстом
             if (!string.IsNullOrEmpty(SearchTextBox.Text))
             {
                 var searchText = SearchTextBox.Text.ToLower();
@@ -145,7 +158,6 @@ namespace HotelServices.Pages
                     (u.FullName != null && u.FullName.ToLower().Contains(searchText)));
             }
 
-            // Фільтр за роллю
             if (RoleFilterComboBox.SelectedIndex > 0 &&
                 RoleFilterComboBox.SelectedIndex <= Enum.GetValues(typeof(UserRole)).Length)
             {
@@ -153,22 +165,15 @@ namespace HotelServices.Pages
                 filtered = filtered.Where(u => u.Role == selectedRole);
             }
 
-            // Оновлення відображення даних
             usersGrid.ItemsSource = filtered.ToList();
         }
 
-        // Метод для анімації натискання кнопки
         private void AnimateButtonClick(Button button)
         {
             if (button == null) return;
-
         }
 
-        // Методи для показу повідомлень користувачу
-        private void ShowNotification(string message)
-        {
-
-        }
+        private void ShowNotification(string message) { }
 
         private void ShowWarning(string message)
         {

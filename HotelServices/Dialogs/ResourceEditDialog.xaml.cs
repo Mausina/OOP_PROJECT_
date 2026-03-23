@@ -1,4 +1,5 @@
-﻿using HotelServices.Models;
+using HotelServices.Models;
+using HotelServices.Services;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -11,6 +12,8 @@ namespace HotelServices.Dialogs
     {
         public Resource Resource { get; private set; }
         private readonly ResourceType _resourceType;
+        private readonly LanguageService _lang = LanguageService.Instance;
+        private readonly bool _isNew;
 
         public ResourceEditDialog(ResourceType resourceType, Resource resource)
         {
@@ -22,6 +25,7 @@ namespace HotelServices.Dialogs
 
             if (resource == null)
             {
+                _isNew = true;
                 Resource = new Resource
                 {
                     Type = resourceType,
@@ -29,12 +33,11 @@ namespace HotelServices.Dialogs
                     StartDate = null,
                     EndDate = null
                 };
-                lblTitle.Text = "Додати новий ресурс";
             }
             else
             {
+                _isNew = false;
                 Resource = resource;
-                lblTitle.Text = "Редагування ресурсу";
                 txtName.Text = resource.Name;
                 txtDescription.Text = resource.Description;
                 txtPrice.Text = resource.Price.ToString();
@@ -61,8 +64,26 @@ namespace HotelServices.Dialogs
             UpdateDatePickersVisibility();
             LoadAdditionalFields();
 
+            _lang.LanguageChanged += (s, e) => ApplyLanguage();
+            ApplyLanguage();
+
             // Анімація появи вікна
             AnimateDialogLoad();
+        }
+
+        private void ApplyLanguage()
+        {
+            lblTitle.Text       = Strings.Get(_isNew ? "ResEdit_TitleAdd" : "ResEdit_TitleEdit");
+            lblName.Text        = Strings.Get("ResEdit_Name");
+            lblDescription.Text = Strings.Get("ResEdit_Description");
+            lblPrice.Text       = Strings.Get("ResEdit_Price");
+            lblStatusLabel.Text = Strings.Get("ResEdit_Status");
+            lblStartDate.Text   = Strings.Get("ResEdit_StartDate");
+            lblEndDate.Text     = Strings.Get("ResEdit_EndDate");
+            txtStartTime.Text   = Strings.Get("ResEdit_Time");
+            txtEndTime.Text     = Strings.Get("ResEdit_Time");
+            btnSave.Content     = Strings.Get("Btn_Save");
+            btnCancel.Content   = Strings.Get("Btn_Cancel");
         }
 
         private void AnimateDialogLoad()

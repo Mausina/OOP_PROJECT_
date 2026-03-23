@@ -1,4 +1,4 @@
-﻿<Page x:Class="HotelServices.Pages.ResourcePage"
+<Page x:Class="HotelServices.Pages.ResourcePage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       Title="Ресурси"
@@ -53,7 +53,7 @@
             </Border.Effect>
 
             <StackPanel Orientation="Horizontal" Margin="10">
-                <Button Content="Додати" 
+                <Button x:Name="btnAdd" Content="Додати" 
                         Click="AddResource" 
                         Style="{StaticResource ActionButtonStyle}">
                     <Button.Resources>
@@ -63,7 +63,7 @@
                     </Button.Resources>
                 </Button>
 
-                <Button Content="Редагувати" 
+                <Button x:Name="btnEdit" Content="Редагувати" 
                         Click="EditResource" 
                         Style="{StaticResource ActionButtonStyle}">
                     <Button.Resources>
@@ -73,7 +73,7 @@
                     </Button.Resources>
                 </Button>
 
-                <Button Content="Видалити" 
+                <Button x:Name="btnDelete" Content="Видалити" 
                         Click="DeleteResource" 
                         Style="{StaticResource ActionButtonStyle}">
                     <Button.Resources>
@@ -83,7 +83,7 @@
                     </Button.Resources>
                 </Button>
 
-                <Button Content="Звіт" 
+                <Button x:Name="btnReport" Content="Звіт" 
                         Click="GenerateReport" 
                         Style="{StaticResource ActionButtonStyle}">
                     <Button.Resources>
@@ -93,7 +93,7 @@
                     </Button.Resources>
                 </Button>
 
-                <Button Content="На головну" 
+                <Button x:Name="btnBack" Content="На головну" 
                         Click="BackToMain_Click" 
                         Style="{StaticResource ActionButtonStyle}">
                     <Button.Resources>
@@ -165,16 +165,16 @@
                               FontSize="14"
                               BorderThickness="0"
                               SelectionChanged="FilterComboBox_SelectionChanged">
-                        <ComboBoxItem Content="Всі статуси" IsSelected="True"/>
-                        <ComboBoxItem Content="Доступний"/>
-                        <ComboBoxItem Content="Заброньований"/>
-                        <ComboBoxItem Content="Зайнятий"/>
-                        <ComboBoxItem Content="На обслуговуванні"/>
+                        <ComboBoxItem x:Name="cmbAll" Content="Всі статуси" IsSelected="True"/>
+                        <ComboBoxItem x:Name="cmbAvailable" Content="Доступний"/>
+                        <ComboBoxItem x:Name="cmbReserved" Content="Заброньований"/>
+                        <ComboBoxItem x:Name="cmbOccupied" Content="Зайнятий"/>
+                        <ComboBoxItem x:Name="cmbMaintenance" Content="На обслуговуванні"/>
                     </ComboBox>
                 </Border>
 
                 <!-- Кнопка скидання фільтрів -->
-                <Button Grid.Column="3" 
+                <Button x:Name="btnResetFilters" Grid.Column="3" 
                         Content="Скинути фільтри" 
                         Click="ResetFilters_Click"
                         Style="{StaticResource ActionButtonStyle}">
@@ -202,14 +202,14 @@
                       SelectionChanged="ResourcesGrid_SelectionChanged"
                       Margin="5">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
-                    <DataGridTextColumn Header="Назва" Binding="{Binding Name}" Width="*"/>
-                    <DataGridTextColumn Header="Ціна" Binding="{Binding Price, StringFormat='{}{0:N2} ₴'}" Width="Auto"/>
-                    <DataGridTextColumn Header="Статус" Binding="{Binding Status}" Width="Auto"/>
-                    <DataGridTextColumn Header="Початок" 
+                    <DataGridTextColumn x:Name="colId"     Header="ID"         Binding="{Binding Id}"    Width="Auto"/>
+                    <DataGridTextColumn x:Name="colName"   Header="Назва"      Binding="{Binding Name}"  Width="*"/>
+                    <DataGridTextColumn x:Name="colPrice"  Header="Ціна"       Binding="{Binding Price, StringFormat='{}{0:N2} ₴'}" Width="Auto"/>
+                    <DataGridTextColumn x:Name="colStatus" Header="Статус"     Binding="{Binding Status}" Width="Auto"/>
+                    <DataGridTextColumn x:Name="colStart"  Header="Початок"
                                        Binding="{Binding StartDate, StringFormat='dd.MM.yyyy HH:mm'}" 
                                        Width="Auto"/>
-                    <DataGridTextColumn Header="Завершення" 
+                    <DataGridTextColumn x:Name="colEnd"    Header="Завершення"
                                        Binding="{Binding EndDate, StringFormat='dd.MM.yyyy HH:mm'}" 
                                        Width="Auto"/>
                 </DataGrid.Columns>

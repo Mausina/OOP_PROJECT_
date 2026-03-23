@@ -1,4 +1,5 @@
-﻿using HotelServices.Models;
+using HotelServices.Models;
+using HotelServices.Services;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,20 +10,21 @@ namespace HotelServices
     public partial class UserEditDialog : Window
     {
         public User User { get; private set; }
+        private readonly LanguageService _lang = LanguageService.Instance;
+        private readonly bool _isNew;
 
         public UserEditDialog(User user)
         {
             InitializeComponent();
+            _isNew = user == null;
 
-            if (user == null)
+            if (_isNew)
             {
                 User = new User();
-                lblTitle.Text = "Додати нового користувача";
             }
             else
             {
                 User = user;
-                lblTitle.Text = "Редагування користувача";
                 txtFullName.Text = user.FullName;
                 txtUsername.Text = user.Username;
             }
@@ -30,9 +32,23 @@ namespace HotelServices
             cmbRole.ItemsSource = System.Enum.GetValues(typeof(UserRole));
             cmbRole.SelectedItem = user?.Role ?? UserRole.Manager;
 
-            // Анімація появи вікна
+            _lang.LanguageChanged += (s, e) => ApplyLanguage();
+            ApplyLanguage();
+
             AnimateDialogLoad();
         }
+
+        private void ApplyLanguage()
+        {
+            lblTitle.Text      = Strings.Get(_isNew ? "UserEdit_TitleAdd" : "UserEdit_TitleEdit");
+            lblFullName.Text   = Strings.Get("UserEdit_FullName");
+            lblUsername.Text   = Strings.Get("UserEdit_Username");
+            lblPassword.Text   = Strings.Get("UserEdit_Password");
+            lblRole.Text       = Strings.Get("UserEdit_Role");
+            btnSave.Content    = Strings.Get("Btn_Save");
+            btnCancel.Content  = Strings.Get("Btn_Cancel");
+        }
+
 
         private void AnimateDialogLoad()
         {

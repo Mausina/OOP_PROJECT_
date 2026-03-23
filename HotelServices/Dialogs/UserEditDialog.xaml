@@ -1,4 +1,4 @@
-﻿<Window x:Class="HotelServices.UserEditDialog"
+<Window x:Class="HotelServices.UserEditDialog"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       Title="Редагування користувача" 
@@ -40,25 +40,25 @@
 
                     <!-- Повне ім'я -->
                     <StackPanel Grid.Row="0">
-                        <TextBlock Text="Повне ім'я:" Style="{StaticResource LabelStyle}"/>
+                        <TextBlock x:Name="lblFullName" Text="Повне ім'я:" Style="{StaticResource LabelStyle}"/>
                         <TextBox x:Name="txtFullName" Style="{StaticResource InputFieldStyle}"/>
                     </StackPanel>
 
                     <!-- Логін -->
                     <StackPanel Grid.Row="1">
-                        <TextBlock Text="Логін:" Style="{StaticResource LabelStyle}"/>
+                        <TextBlock x:Name="lblUsername" Text="Логін:" Style="{StaticResource LabelStyle}"/>
                         <TextBox x:Name="txtUsername" Style="{StaticResource InputFieldStyle}"/>
                     </StackPanel>
 
                     <!-- Пароль -->
                     <StackPanel Grid.Row="2">
-                        <TextBlock Text="Пароль:" Style="{StaticResource LabelStyle}"/>
+                        <TextBlock x:Name="lblPassword" Text="Пароль:" Style="{StaticResource LabelStyle}"/>
                         <PasswordBox x:Name="txtPassword" Style="{StaticResource PasswordFieldStyle}"/>
                     </StackPanel>
 
                     <!-- Роль -->
                     <StackPanel Grid.Row="3">
-                        <TextBlock Text="Роль:" Style="{StaticResource LabelStyle}"/>
+                        <TextBlock x:Name="lblRole" Text="Роль:" Style="{StaticResource LabelStyle}"/>
                         <ComboBox x:Name="cmbRole" Style="{StaticResource ComboBoxStyle}"/>
                     </StackPanel>
                 </Grid>
@@ -72,11 +72,11 @@
             <StackPanel Orientation="Horizontal" 
                       HorizontalAlignment="Right" 
                       Margin="10">
-                <Button Content="Зберегти" 
+                <Button x:Name="btnSave" Content="Зберегти" 
                       Click="Save_Click" 
                       Width="120"
                       Style="{StaticResource RoundedDialogButtonStyle}"/>
-                <Button Content="Скасувати" 
+                <Button x:Name="btnCancel" Content="Скасувати" 
                       Click="Cancel_Click" 
                       Width="120"
                       Style="{StaticResource RoundedDialogButtonStyle}"/>

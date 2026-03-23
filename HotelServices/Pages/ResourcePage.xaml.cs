@@ -1,4 +1,4 @@
-﻿using HotelServices.Models;
+using HotelServices.Models;
 using HotelServices.Services;
 using HotelServices;
 using System;
@@ -16,6 +16,7 @@ namespace HotelServices.Pages
         private readonly ResourceType _resourceType;
         private readonly User _currentUser;
         private readonly DataService _dataService;
+        private readonly LanguageService _lang = LanguageService.Instance;
         private List<Resource> _resources;
 
         public ResourcePage(ResourceType resourceType, User currentUser)
@@ -26,8 +27,48 @@ namespace HotelServices.Pages
             _dataService = new DataService();
             DataContext = this;
 
-            SetTitle();
+            _lang.LanguageChanged += (s, e) => ApplyLanguage();
+            ApplyLanguage();
             LoadResources();
+        }
+
+        private void ApplyLanguage()
+        {
+            // Title
+            lblTitle.Text = _resourceType switch
+            {
+                ResourceType.Apartment        => Strings.Get("Resource_Apartments"),
+                ResourceType.ConferenceRoom   => Strings.Get("Resource_Conference"),
+                ResourceType.ParkingSpace     => Strings.Get("Resource_Parking"),
+                ResourceType.RestaurantTable  => Strings.Get("Resource_Restaurant"),
+                ResourceType.AdditionalService => Strings.Get("Resource_Services"),
+                _                             => Strings.Get("Resource_Apartments")
+            };
+
+            // Buttons
+            btnAdd.Content          = Strings.Get("Btn_Add");
+            btnEdit.Content         = Strings.Get("Btn_Edit");
+            btnDelete.Content       = Strings.Get("Btn_Delete");
+            btnReport.Content       = Strings.Get("Btn_Report");
+            btnBack.Content         = Strings.Get("Btn_Back");
+            btnResetFilters.Content = Strings.Get("Btn_ResetFilters");
+
+            // Search placeholder
+            PlaceholderTextBlock.Text = Strings.Get("Placeholder_Search");
+
+            // Filter ComboBox items
+            cmbAll.Content         = Strings.Get("Filter_AllStatuses");
+            cmbAvailable.Content   = Strings.Get("Filter_Available");
+            cmbReserved.Content    = Strings.Get("Filter_Reserved");
+            cmbOccupied.Content    = Strings.Get("Filter_Occupied");
+            cmbMaintenance.Content = Strings.Get("Filter_Maintenance");
+
+            // DataGrid column headers
+            colName.Header   = Strings.Get("Col_Name");
+            colPrice.Header  = Strings.Get("Col_Price");
+            colStatus.Header = Strings.Get("Col_Status");
+            colStart.Header  = Strings.Get("Col_Start");
+            colEnd.Header    = Strings.Get("Col_End");
         }
 
         private void BackToMain_Click(object sender, RoutedEventArgs e)
@@ -39,27 +80,10 @@ namespace HotelServices.Pages
             }
         }
 
-        private void SetTitle()
-        {
-            string title = _resourceType switch
-            {
-                ResourceType.Apartment => "Управління апартаментами",
-                ResourceType.ConferenceRoom => "Бронювання конференц-залів",
-                ResourceType.ParkingSpace => "Облік паркомісць",
-                ResourceType.RestaurantTable => "Бронювання ресторану",
-                ResourceType.AdditionalService => "Додаткові послуги",
-                _ => "Ресурси"
-            };
-
-            lblTitle.Text = title;
-        }
-
         private void LoadResources()
         {
             _resources = _dataService.GetResourcesByType(_resourceType);
             resourcesGrid.ItemsSource = _resources;
-
-            // Стилізація даних в таблиці на основі статусу (можна розширити)
         }
 
         private void AddResource(object sender, RoutedEventArgs e)
@@ -119,15 +143,11 @@ namespace HotelServices.Pages
             reportDialog.ShowDialog();
         }
 
-        private void ResourcesGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            // Оновлення інтерфейсу при виборі елемента
-        }
+        private void ResourcesGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) { }
 
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             ApplyFilters();
-            // Показати або сховати плейсхолдер
             PlaceholderTextBlock.Visibility = string.IsNullOrWhiteSpace(SearchTextBox.Text)
                 ? Visibility.Visible
                 : Visibility.Collapsed;
@@ -153,7 +173,6 @@ namespace HotelServices.Pages
 
             var filtered = _resources.AsEnumerable();
 
-            // Пошук за текстом
             if (!string.IsNullOrEmpty(SearchTextBox.Text))
             {
                 var searchText = SearchTextBox.Text.ToLower();
@@ -162,29 +181,21 @@ namespace HotelServices.Pages
                     (r.Description != null && r.Description.ToLower().Contains(searchText)));
             }
 
-            // Фільтр за статусом
             if (StatusFilterComboBox.SelectedIndex > 0 && StatusFilterComboBox.SelectedIndex <= Enum.GetValues(typeof(ReservationStatus)).Length)
             {
                 var selectedStatus = (ReservationStatus)(StatusFilterComboBox.SelectedIndex - 1);
                 filtered = filtered.Where(r => r.Status == selectedStatus);
             }
 
-            // Оновлення відображення даних
             resourcesGrid.ItemsSource = filtered.ToList();
-
         }
 
-        // Метод для анімації натискання кнопки
         private void AnimateButtonClick(Button button)
         {
             if (button == null) return;
-
         }
 
-        private void ShowNotification(string message)
-        {
-
-        }
+        private void ShowNotification(string message) { }
 
         private void ShowWarning(string message)
         {

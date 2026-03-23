@@ -1,4 +1,4 @@
-﻿using HotelServices.Services;
+using HotelServices.Services;
 using HotelServices.Pages;
 using System.Windows;
 using System.Windows.Input;
@@ -8,6 +8,7 @@ namespace HotelServices
     public partial class MainWindow : Window
     {
         private readonly AuthService _authService;
+        private readonly LanguageService _lang = LanguageService.Instance;
 
         public MainWindow()
         {
@@ -16,6 +17,25 @@ namespace HotelServices
 
             // Дозволяє перетягувати вікно
             this.MouseDown += Window_MouseDown;
+
+            _lang.LanguageChanged += (s, e) => ApplyLanguage();
+            ApplyLanguage();
+        }
+
+        private void ApplyLanguage()
+        {
+            this.Title          = Strings.Get("Window_Login");
+            btnLang.Content     = _lang.ButtonText;
+            lblLoginTitle.Text  = Strings.Get("Login_Title");
+            lblUsername.Text    = Strings.Get("Login_Username");
+            lblPassword.Text    = Strings.Get("Login_Password");
+            btnLogin.Content    = Strings.Get("Login_Button");
+            lblError.Text       = string.Empty;
+        }
+
+        private void BtnLang_Click(object sender, RoutedEventArgs e)
+        {
+            _lang.Toggle();
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -41,7 +61,7 @@ namespace HotelServices
 
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
             {
-                lblError.Text = "Введіть логін та пароль";
+                lblError.Text = Strings.Get("Login_Error_Empty");
                 return;
             }
 
@@ -54,7 +74,7 @@ namespace HotelServices
             }
             else
             {
-                lblError.Text = "Невірний логін або пароль";
+                lblError.Text = Strings.Get("Login_Error_Invalid");
             }
         }
     }
