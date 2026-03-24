@@ -24,11 +24,11 @@ namespace HotelServices.Dialogs
             _dataService = new DataService();
             _resourceType = resourceType;
 
-            // Встановлюємо початкові дати
+            // Set the start dates
             dpStartDate.SelectedDate = DateTime.Today.AddDays(-7);
             dpEndDate.SelectedDate = DateTime.Today;
 
-            // Встановлюємо тип ресурсу
+            // Set the resource type
             cmbResourceType.ItemsSource = Enum.GetValues(typeof(ResourceType));
             cmbResourceType.SelectedItem = _resourceType;
         }
@@ -104,7 +104,7 @@ namespace HotelServices.Dialogs
 
         private void GeneratePdfReport(string filePath)
         {
-            // Реєструємо шрифт з підтримкою кирилиці (Arial Unicode MS або інший)
+            // Install a font that supports Cyrillic (Arial Unicode MS or another font)
             string fontPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Fonts), "times.ttf");
             BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             Font font = new Font(baseFont, 10);
@@ -119,25 +119,25 @@ namespace HotelServices.Dialogs
                 PdfWriter.GetInstance(document, stream);
                 document.Open();
 
-                // Заголовок звіту англійською
+                //  Report title in English
                 var title = new Paragraph($"Report for {GetResourceTypeNameEnglish(_resourceType)}", fontTitle);
                 title.Alignment = Element.ALIGN_CENTER;
                 document.Add(title);
 
-                // Період звіту
+                //Reporting period
                 var period = new Paragraph($"Period: from {dpStartDate.SelectedDate.Value:dd.MM.yyyy} to {dpEndDate.SelectedDate.Value:dd.MM.yyyy}", font);
                 period.Alignment = Element.ALIGN_CENTER;
                 document.Add(period);
 
                 document.Add(new Paragraph("\n"));
 
-                // Таблиця з даними
-                PdfPTable table = new PdfPTable(6); // 6 стовпців
+                // Table of data
+                PdfPTable table = new PdfPTable(6); // 6 columns
                 table.WidthPercentage = 100;
                 float[] columnWidths = new float[] { 0.5f, 1.5f, 2f, 2f, 1.5f, 1.5f };
                 table.SetWidths(columnWidths);
 
-                // Англійські заголовки стовпців
+                //  English column headers
                 string[] columnHeaders = new string[]
                 {
             "#",
@@ -148,7 +148,7 @@ namespace HotelServices.Dialogs
             "Income (UAH)"
                 };
 
-                // Додаємо заголовки
+                // Add headings
                 foreach (var headerText in columnHeaders)
                 {
                     var header = new PdfPCell(new Phrase(headerText, fontHeader));
@@ -158,7 +158,7 @@ namespace HotelServices.Dialogs
                     table.AddCell(header);
                 }
 
-                // Дані з таблиці
+                //  Data from the table
                 int rowNumber = 1;
                 foreach (var item in reportDataGrid.Items)
                 {
@@ -175,14 +175,14 @@ namespace HotelServices.Dialogs
 
                 document.Add(table);
 
-                // Підсумки англійською
+                // Summary in English
                 document.Add(new Paragraph("\n"));
                 var totalIncome = reportDataGrid.Items.Cast<Resource>().Sum(r => r.TotalIncome);
                 var summary = new Paragraph($"Total income: {totalIncome:N2} UAH", fontSummary);
                 summary.Alignment = Element.ALIGN_RIGHT;
                 document.Add(summary);
 
-                // Футер
+                // Footer
                 var footer = new Paragraph($"Report generated: {DateTime.Now:dd.MM.yyyy HH:mm}", font);
                 footer.Alignment = Element.ALIGN_RIGHT;
                 document.Add(footer);
