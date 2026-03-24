@@ -20,7 +20,7 @@ namespace HotelServices.Dialogs
             InitializeComponent();
             _resourceType = resourceType;
 
-            // Ініціалізація вибору часу
+            // Initializing the time selection
             InitializeTimeComboBoxes();
 
             if (resource == null)
@@ -67,7 +67,7 @@ namespace HotelServices.Dialogs
             _lang.LanguageChanged += (s, e) => ApplyLanguage();
             ApplyLanguage();
 
-            // Анімація появи вікна
+            // Window appearance animation
             AnimateDialogLoad();
         }
 
@@ -88,7 +88,7 @@ namespace HotelServices.Dialogs
 
         private void AnimateDialogLoad()
         {
-            // Анімація заголовка
+            //  Header animation
             var titleAnimation = new DoubleAnimation
             {
                 From = 0,
@@ -97,7 +97,7 @@ namespace HotelServices.Dialogs
             };
             lblTitle.BeginAnimation(UIElement.OpacityProperty, titleAnimation);
 
-            // Анімація появи основного вмісту
+            //Animation of the main content loading
             var contentAnimation = new DoubleAnimation
             {
                 From = 0.7,
@@ -109,14 +109,14 @@ namespace HotelServices.Dialogs
 
         private void InitializeTimeComboBoxes()
         {
-            // Заповнення годин (0-23)
+            // Filling in the hours (0–23)
             for (int i = 0; i < 24; i++)
             {
                 cmbStartHour.Items.Add(i);
                 cmbEndHour.Items.Add(i);
             }
 
-            // Заповнення хвилин (00, 15, 30, 45)
+            // Filling in the minutes (00, 15, 30, 45)
             cmbStartMinute.Items.Add(0);
             cmbStartMinute.Items.Add(15);
             cmbStartMinute.Items.Add(30);
@@ -127,10 +127,10 @@ namespace HotelServices.Dialogs
             cmbEndMinute.Items.Add(30);
             cmbEndMinute.Items.Add(45);
 
-            // Встановлення поточного часу за замовчуванням
+            // Set the default current time
             var now = DateTime.Now;
             cmbStartHour.SelectedItem = now.Hour;
-            cmbStartMinute.SelectedItem = (now.Minute / 15) * 15; // Округлюємо до 15 хв
+            cmbStartMinute.SelectedItem = (now.Minute / 15) * 15; // Round up to 15 minutes
 
             cmbEndHour.SelectedItem = now.AddHours(1).Hour;
             cmbEndMinute.SelectedItem = (now.AddHours(1).Minute / 15) * 15;
@@ -162,7 +162,7 @@ namespace HotelServices.Dialogs
 
             Visibility visibility = datesRequired ? Visibility.Visible : Visibility.Collapsed;
 
-            // Використовуємо StackPanel для групового керування видимістю
+            // We use a StackPanel to manage visibility in groups
             startDatePanel.Visibility = visibility;
             endDatePanel.Visibility = visibility;
         }
@@ -171,7 +171,7 @@ namespace HotelServices.Dialogs
         {
             additionalFieldsPanel.Children.Clear();
 
-            // Заголовок для розділу додаткових полів
+            // Heading for the additional fields section
             TextBlock header = new TextBlock
             {
                 Text = "Додаткова інформація",
@@ -361,7 +361,7 @@ namespace HotelServices.Dialogs
                     break;
             }
 
-            // Анімація при збереженні
+            // Animation on save
             AnimateButtonClick(sender as Button);
 
             DialogResult = true;
@@ -370,7 +370,7 @@ namespace HotelServices.Dialogs
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
-            // Анімація при скасуванні
+            // Animation on cancellation
             AnimateButtonClick(sender as Button);
 
             DialogResult = false;
@@ -381,7 +381,7 @@ namespace HotelServices.Dialogs
         {
             if (button == null) return;
 
-            // Створюємо стислу анімацію для кнопки при натисканні
+            // Let's create a brief animation for the button when it's clicked
             var scaleDownAnimation = new DoubleAnimation
             {
                 From = 1.0,

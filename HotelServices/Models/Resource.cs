@@ -28,29 +28,29 @@ namespace HotelServices.Models
         public decimal Price { get; set; }
         public ReservationStatus Status { get; set; }
 
-        // Для апартаментів
+        // For apartments
         public int? Rooms { get; set; }
         public bool? IsLuxury { get; set; }
 
-        // Для конференц-залів
+        //  For conference rooms
         public int? Capacity { get; set; }
 
-        // Для паркомісць
+        //  For parking spaces
         public string? ParkingNumber { get; set; }
 
-        // Для ресторану
+        // For a restaurant
         public int? TableNumber { get; set; }
         public int? Guests { get; set; }
 
-        // Для додаткових послуг
+        // For additional services
         public string? ServiceType { get; set; }
 
-        // Бронювання
+        // Reservations
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public int? ReservedByUserId { get; set; }
 
-        public decimal TotalIncome { get; set; } // Загальний дохід
-        public double OccupancyDuration { get; set; } // Тривалість у годинах
+        public decimal TotalIncome { get; set; } //  Total revenue
+        public double OccupancyDuration { get; set; } // Duration in hours
     }
 }

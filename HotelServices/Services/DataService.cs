@@ -27,7 +27,7 @@ namespace HotelServices.Services
                 {
                     connection.Open();
 
-                    // Створення таблиць
+                    // Creating tables
                     string createUsersTable = @"
                     CREATE TABLE Users (
                         Id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -61,7 +61,7 @@ namespace HotelServices.Services
                     new SQLiteCommand(createUsersTable, connection).ExecuteNonQuery();
                     new SQLiteCommand(createResourcesTable, connection).ExecuteNonQuery();
 
-                    // Додати адміна за замовчуванням
+                    //  Add a default administrator
                     string addAdmin = @"
                     INSERT INTO Users (Username, Password, FullName, Role)
                     VALUES ('admin', 'admin', 'Директор', 1)";
@@ -73,7 +73,7 @@ namespace HotelServices.Services
                     new SQLiteCommand(addAdmin, connection).ExecuteNonQuery();
                     new SQLiteCommand(addManager, connection).ExecuteNonQuery();
 
-                    // Додати приклади ресурсів
+                    // Add examples of resources
                     string addResources = @"
                     INSERT INTO Resources (Type, Name, Description, Price, Status, Rooms, IsLuxury, Capacity, ParkingNumber, TableNumber, Guests, ServiceType)
                     VALUES 
@@ -167,7 +167,7 @@ namespace HotelServices.Services
                     command.ExecuteNonQuery();
                 }
 
-                // Отримати ID останнього доданого користувача
+                // Get the ID of the most recently added user
                 query = "SELECT last_insert_rowid()";
                 using (var command = new SQLiteCommand(query, connection))
                 {
@@ -293,7 +293,7 @@ namespace HotelServices.Services
                     command.ExecuteNonQuery();
                 }
 
-                // Отримати ID останнього доданого ресурсу
+                //Get the ID of the most recently added resource
                 query = "SELECT last_insert_rowid()";
                 using (var command = new SQLiteCommand(query, connection))
                 {
@@ -367,7 +367,7 @@ namespace HotelServices.Services
                 ReservedByUserId = reader["ReservedByUserId"] is DBNull ? null : (int?)Convert.ToInt32(reader["ReservedByUserId"])
             };
 
-            // Заповнення специфічних полів
+            // Filling in specific fields
             if (!(reader["Rooms"] is DBNull)) resource.Rooms = Convert.ToInt32(reader["Rooms"]);
             if (!(reader["IsLuxury"] is DBNull)) resource.IsLuxury = Convert.ToBoolean(reader["IsLuxury"]);
             if (!(reader["Capacity"] is DBNull)) resource.Capacity = Convert.ToInt32(reader["Capacity"]);
@@ -394,7 +394,7 @@ namespace HotelServices.Services
             command.Parameters.AddWithValue("@Price", resource.Price);
             command.Parameters.AddWithValue("@Status", (int)resource.Status);
 
-            // Специфічні параметри
+            // Specific parameters
             command.Parameters.AddWithValue("@Rooms", (object)resource.Rooms ?? DBNull.Value);
             command.Parameters.AddWithValue("@IsLuxury", (object)resource.IsLuxury ?? DBNull.Value);
             command.Parameters.AddWithValue("@Capacity", (object)resource.Capacity ?? DBNull.Value);
@@ -403,7 +403,7 @@ namespace HotelServices.Services
             command.Parameters.AddWithValue("@Guests", (object)resource.Guests ?? DBNull.Value);
             command.Parameters.AddWithValue("@ServiceType", (object)resource.ServiceType ?? DBNull.Value);
 
-            // Дати бронювання
+            // Reservation dates
             command.Parameters.AddWithValue("@StartDate", (object)resource.StartDate?.ToString("o") ?? DBNull.Value);
             command.Parameters.AddWithValue("@EndDate", (object)resource.EndDate?.ToString("o") ?? DBNull.Value);
             command.Parameters.AddWithValue("@ReservedByUserId", (object)resource.ReservedByUserId ?? DBNull.Value);
@@ -441,7 +441,7 @@ namespace HotelServices.Services
                         {
                             var resource = ReadResourceFromReader(reader);
 
-                            // Додаткові розрахунки для звіту
+                            // Additional calculations for the report
                             if (resource.StartDate.HasValue && resource.EndDate.HasValue)
                             {
                                 resource.TotalIncome = CalculateIncome(resource);
@@ -464,17 +464,17 @@ namespace HotelServices.Services
 
             var duration = (resource.EndDate.Value - resource.StartDate.Value).TotalHours;
 
-            // Різні формули розрахунку для різних типів ресурсів
+            // Different calculation formulas for different types of resources
             switch (resource.Type)
             {
                 case ResourceType.Apartment:
-                    return resource.Price * (decimal)(duration / 24); // Ціна за добу
+                    return resource.Price * (decimal)(duration / 24); // Price per night
                 case ResourceType.ConferenceRoom:
-                    return resource.Price * (decimal)(duration / 1); // Ціна за годину
+                    return resource.Price * (decimal)(duration / 1); // Price per hour
                 case ResourceType.ParkingSpace:
-                    return resource.Price * (decimal)(duration / 24); // Ціна за добу
+                    return resource.Price * (decimal)(duration / 24); // Price per night
                 case ResourceType.RestaurantTable:
-                    // Для столів - фіксована ціна за бронювання
+                    // For tables – fixed price per reservation
                     return resource.Price * resource.Guests ?? 1;
                 case ResourceType.AdditionalService:
                     return resource.Price * (decimal)duration;

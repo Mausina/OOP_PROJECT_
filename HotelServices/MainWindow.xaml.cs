@@ -15,7 +15,7 @@ namespace HotelServices
             InitializeComponent();
             _authService = new AuthService();
 
-            // Дозволяє перетягувати вікно
+            // Allows the window to be dragged
             this.MouseDown += Window_MouseDown;
 
             _lang.LanguageChanged += (s, e) => ApplyLanguage();
