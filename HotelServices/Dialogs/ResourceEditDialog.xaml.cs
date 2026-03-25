@@ -20,7 +20,6 @@ namespace HotelServices.Dialogs
             InitializeComponent();
             _resourceType = resourceType;
 
-            // Initializing the time selection
             InitializeTimeComboBoxes();
 
             if (resource == null)
@@ -64,31 +63,29 @@ namespace HotelServices.Dialogs
             UpdateDatePickersVisibility();
             LoadAdditionalFields();
 
-            _lang.LanguageChanged += (s, e) => ApplyLanguage();
+            _lang.LanguageChanged += (s, e) => { ApplyLanguage(); LoadAdditionalFields(); };
             ApplyLanguage();
 
-            // Window appearance animation
             AnimateDialogLoad();
         }
 
         private void ApplyLanguage()
         {
-            lblTitle.Text       = Strings.Get(_isNew ? "ResEdit_TitleAdd" : "ResEdit_TitleEdit");
-            lblName.Text        = Strings.Get("ResEdit_Name");
+            lblTitle.Text = Strings.Get(_isNew ? "ResEdit_TitleAdd" : "ResEdit_TitleEdit");
+            lblName.Text = Strings.Get("ResEdit_Name");
             lblDescription.Text = Strings.Get("ResEdit_Description");
-            lblPrice.Text       = Strings.Get("ResEdit_Price");
+            lblPrice.Text = Strings.Get("ResEdit_Price");
             lblStatusLabel.Text = Strings.Get("ResEdit_Status");
-            lblStartDate.Text   = Strings.Get("ResEdit_StartDate");
-            lblEndDate.Text     = Strings.Get("ResEdit_EndDate");
-            txtStartTime.Text   = Strings.Get("ResEdit_Time");
-            txtEndTime.Text     = Strings.Get("ResEdit_Time");
-            btnSave.Content     = Strings.Get("Btn_Save");
-            btnCancel.Content   = Strings.Get("Btn_Cancel");
+            lblStartDate.Text = Strings.Get("ResEdit_StartDate");
+            lblEndDate.Text = Strings.Get("ResEdit_EndDate");
+            txtStartTime.Text = Strings.Get("ResEdit_Time");
+            txtEndTime.Text = Strings.Get("ResEdit_Time");
+            btnSave.Content = Strings.Get("Btn_Save");
+            btnCancel.Content = Strings.Get("Btn_Cancel");
         }
 
         private void AnimateDialogLoad()
         {
-            //  Header animation
             var titleAnimation = new DoubleAnimation
             {
                 From = 0,
@@ -97,7 +94,6 @@ namespace HotelServices.Dialogs
             };
             lblTitle.BeginAnimation(UIElement.OpacityProperty, titleAnimation);
 
-            //Animation of the main content loading
             var contentAnimation = new DoubleAnimation
             {
                 From = 0.7,
@@ -109,14 +105,12 @@ namespace HotelServices.Dialogs
 
         private void InitializeTimeComboBoxes()
         {
-            // Filling in the hours (0–23)
             for (int i = 0; i < 24; i++)
             {
                 cmbStartHour.Items.Add(i);
                 cmbEndHour.Items.Add(i);
             }
 
-            // Filling in the minutes (00, 15, 30, 45)
             cmbStartMinute.Items.Add(0);
             cmbStartMinute.Items.Add(15);
             cmbStartMinute.Items.Add(30);
@@ -127,10 +121,9 @@ namespace HotelServices.Dialogs
             cmbEndMinute.Items.Add(30);
             cmbEndMinute.Items.Add(45);
 
-            // Set the default current time
             var now = DateTime.Now;
             cmbStartHour.SelectedItem = now.Hour;
-            cmbStartMinute.SelectedItem = (now.Minute / 15) * 15; // Round up to 15 minutes
+            cmbStartMinute.SelectedItem = (now.Minute / 15) * 15;
 
             cmbEndHour.SelectedItem = now.AddHours(1).Hour;
             cmbEndMinute.SelectedItem = (now.AddHours(1).Minute / 15) * 15;
@@ -162,7 +155,6 @@ namespace HotelServices.Dialogs
 
             Visibility visibility = datesRequired ? Visibility.Visible : Visibility.Collapsed;
 
-            // We use a StackPanel to manage visibility in groups
             startDatePanel.Visibility = visibility;
             endDatePanel.Visibility = visibility;
         }
@@ -171,13 +163,13 @@ namespace HotelServices.Dialogs
         {
             additionalFieldsPanel.Children.Clear();
 
-            // Heading for the additional fields section
             TextBlock header = new TextBlock
             {
-                Text = "Додаткова інформація",
+                Text = Strings.Get("AdditionalInfo_Header"),
                 FontSize = 16,
                 FontWeight = FontWeights.SemiBold,
-                Foreground = new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#2D5F8B")),
+                Foreground = new System.Windows.Media.SolidColorBrush(
+                    (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#2D5F8B")),
                 Margin = new Thickness(0, 0, 0, 10)
             };
             additionalFieldsPanel.Children.Add(header);
@@ -185,21 +177,21 @@ namespace HotelServices.Dialogs
             switch (_resourceType)
             {
                 case ResourceType.Apartment:
-                    AddField("Кількість кімнат:", "txtRooms", Resource?.Rooms?.ToString() ?? "");
-                    AddCheckBox("Люкс:", "chkIsLuxury", Resource?.IsLuxury ?? false);
+                    AddField(Strings.Get("Field_Rooms"), "txtRooms", Resource?.Rooms?.ToString() ?? "");
+                    AddCheckBox(Strings.Get("Field_IsLuxury"), "chkIsLuxury", Resource?.IsLuxury ?? false);
                     break;
                 case ResourceType.ConferenceRoom:
-                    AddField("Місткість:", "txtCapacity", Resource?.Capacity?.ToString() ?? "");
+                    AddField(Strings.Get("Field_Capacity"), "txtCapacity", Resource?.Capacity?.ToString() ?? "");
                     break;
                 case ResourceType.ParkingSpace:
-                    AddField("Номер паркомісця:", "txtParkingNumber", Resource?.ParkingNumber ?? "");
+                    AddField(Strings.Get("Field_ParkingNumber"), "txtParkingNumber", Resource?.ParkingNumber ?? "");
                     break;
                 case ResourceType.RestaurantTable:
-                    AddField("Номер столу:", "txtTableNumber", Resource?.TableNumber?.ToString() ?? "");
-                    AddField("Кількість гостей:", "txtGuests", Resource?.Guests?.ToString() ?? "");
+                    AddField(Strings.Get("Field_TableNumber"), "txtTableNumber", Resource?.TableNumber?.ToString() ?? "");
+                    AddField(Strings.Get("Field_Guests"), "txtGuests", Resource?.Guests?.ToString() ?? "");
                     break;
                 case ResourceType.AdditionalService:
-                    AddField("Тип послуги:", "txtServiceType", Resource?.ServiceType ?? "");
+                    AddField(Strings.Get("Field_ServiceType"), "txtServiceType", Resource?.ServiceType ?? "");
                     break;
             }
         }
@@ -209,7 +201,8 @@ namespace HotelServices.Dialogs
             var labelBlock = new TextBlock
             {
                 Text = label,
-                Foreground = new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#2D5F8B")),
+                Foreground = new System.Windows.Media.SolidColorBrush(
+                    (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#2D5F8B")),
                 FontSize = 14,
                 Margin = new Thickness(0, 0, 0, 5)
             };
@@ -219,7 +212,8 @@ namespace HotelServices.Dialogs
                 Name = fieldName,
                 Text = value,
                 Height = 35,
-                BorderBrush = new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#CCDDEE")),
+                BorderBrush = new System.Windows.Media.SolidColorBrush(
+                    (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#CCDDEE")),
                 BorderThickness = new Thickness(1),
                 Padding = new Thickness(8, 5, 8, 5),
                 VerticalContentAlignment = VerticalAlignment.Center,
@@ -245,7 +239,8 @@ namespace HotelServices.Dialogs
                 Text = label,
                 Width = 100,
                 VerticalAlignment = VerticalAlignment.Center,
-                Foreground = new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#2D5F8B")),
+                Foreground = new System.Windows.Media.SolidColorBrush(
+                    (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#2D5F8B")),
                 FontSize = 14
             };
 
@@ -268,9 +263,7 @@ namespace HotelServices.Dialogs
             foreach (var child in additionalFieldsPanel.Children)
             {
                 if (child is TextBox textBox && textBox.Name == name)
-                {
                     return textBox;
-                }
             }
             return null;
         }
@@ -284,9 +277,7 @@ namespace HotelServices.Dialogs
                     foreach (var panelChild in panel.Children)
                     {
                         if (panelChild is CheckBox checkBox && checkBox.Name == name)
-                        {
                             return checkBox;
-                        }
                     }
                 }
             }
@@ -297,13 +288,13 @@ namespace HotelServices.Dialogs
         {
             if (string.IsNullOrWhiteSpace(txtName.Text))
             {
-                ShowErrorMessage("Будь ласка, введіть назву ресурсу");
+                ShowErrorMessage(Strings.Get("Error_EnterName"));
                 return;
             }
 
             if (!decimal.TryParse(txtPrice.Text, out decimal price))
             {
-                ShowErrorMessage("Будь ласка, введіть коректну ціну");
+                ShowErrorMessage(Strings.Get("Error_InvalidPrice"));
                 return;
             }
 
@@ -318,13 +309,13 @@ namespace HotelServices.Dialogs
 
                 if (startDate == null || endDate == null)
                 {
-                    ShowErrorMessage("Будь ласка, вкажіть дату та час початку і завершення");
+                    ShowErrorMessage(Strings.Get("Error_EnterDates"));
                     return;
                 }
 
                 if (startDate >= endDate)
                 {
-                    ShowErrorMessage("Час початку повинен бути раніше часу завершення");
+                    ShowErrorMessage(Strings.Get("Error_DateOrder"));
                     return;
                 }
             }
@@ -361,7 +352,6 @@ namespace HotelServices.Dialogs
                     break;
             }
 
-            // Animation on save
             AnimateButtonClick(sender as Button);
 
             DialogResult = true;
@@ -370,9 +360,7 @@ namespace HotelServices.Dialogs
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
-            // Animation on cancellation
             AnimateButtonClick(sender as Button);
-
             DialogResult = false;
             Close();
         }
@@ -381,7 +369,6 @@ namespace HotelServices.Dialogs
         {
             if (button == null) return;
 
-            // Let's create a brief animation for the button when it's clicked
             var scaleDownAnimation = new DoubleAnimation
             {
                 From = 1.0,
@@ -402,7 +389,6 @@ namespace HotelServices.Dialogs
 
             scaleTransform.BeginAnimation(System.Windows.Media.ScaleTransform.ScaleXProperty, scaleDownAnimation);
             scaleTransform.BeginAnimation(System.Windows.Media.ScaleTransform.ScaleYProperty, scaleDownAnimation);
-
             scaleTransform.BeginAnimation(System.Windows.Media.ScaleTransform.ScaleXProperty, scaleUpAnimation);
             scaleTransform.BeginAnimation(System.Windows.Media.ScaleTransform.ScaleYProperty, scaleUpAnimation);
         }

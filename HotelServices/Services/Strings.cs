@@ -118,6 +118,16 @@ namespace HotelServices.Services
             // DashboardWindow title
             ["Window_Dashboard"]         = "Головна панель",
             ["Window_Login"]             = "HotelServices - Авторизація",
+
+
+            ["AdditionalInfo_Header"] = "Додаткова інформація",
+            ["Field_Rooms"] = "Кількість кімнат:",
+            ["Field_IsLuxury"] = "Люкс:",
+            ["Field_Capacity"] = "Місткість:",
+            ["Field_ParkingNumber"] = "Номер паркомісця:",
+            ["Field_TableNumber"] = "Номер столу:",
+            ["Field_Guests"] = "Кількість гостей:",
+            ["Field_ServiceType"] = "Тип послуги:",
         };
 
         private static readonly Dictionary<string, string> EN = new Dictionary<string, string>
@@ -234,6 +244,16 @@ namespace HotelServices.Services
             // DashboardWindow title
             ["Window_Dashboard"]         = "Main Panel",
             ["Window_Login"]             = "HotelServices - Login",
+
+
+            ["AdditionalInfo_Header"] = "Additional Information",
+            ["Field_Rooms"] = "Number of rooms:",
+            ["Field_IsLuxury"] = "Luxury:",
+            ["Field_Capacity"] = "Capacity:",
+            ["Field_ParkingNumber"] = "Parking space number:",
+            ["Field_TableNumber"] = "Table number:",
+            ["Field_Guests"] = "Number of guests:",
+            ["Field_ServiceType"] = "Service type:",
         };
 
         public static string Get(string key, AppLanguage lang = AppLanguage.UA)

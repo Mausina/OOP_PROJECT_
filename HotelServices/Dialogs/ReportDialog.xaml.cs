@@ -17,6 +17,7 @@ namespace HotelServices.Dialogs
     {
         private readonly DataService _dataService;
         private readonly ResourceType _resourceType;
+        private readonly LanguageService _lang = LanguageService.Instance;
 
         public ReportDialog(ResourceType resourceType)
         {
@@ -24,27 +25,45 @@ namespace HotelServices.Dialogs
             _dataService = new DataService();
             _resourceType = resourceType;
 
-            // Set the start dates
             dpStartDate.SelectedDate = DateTime.Today.AddDays(-7);
             dpEndDate.SelectedDate = DateTime.Today;
 
-            // Set the resource type
             cmbResourceType.ItemsSource = Enum.GetValues(typeof(ResourceType));
             cmbResourceType.SelectedItem = _resourceType;
+
+            _lang.LanguageChanged += (s, e) => ApplyLanguage();
+            ApplyLanguage();
+        }
+
+        private void ApplyLanguage()
+        {
+            lblTitle.Text        = Strings.Get("Report_Title");
+            lblFrom.Text         = Strings.Get("Report_PeriodFrom");
+            lblTo.Text           = Strings.Get("Report_PeriodTo");
+            lblResType.Text      = Strings.Get("Report_ResourceType");
+            colName.Header       = Strings.Get("Report_ColName");
+            colStatus.Header     = Strings.Get("Report_ColStatus");
+            colStart.Header      = Strings.Get("Report_ColStart");
+            colEnd.Header        = Strings.Get("Report_ColEnd");
+            colDuration.Header   = Strings.Get("Report_ColDuration");
+            colIncome.Header     = Strings.Get("Report_ColIncome");
+            btnGenerate.Content  = Strings.Get("Btn_Generate");
+            btnExportPdf.Content = Strings.Get("Btn_ExportPdf");
+            btnCancel.Content    = Strings.Get("Btn_Cancel");
         }
 
         private void Generate_Click(object sender, RoutedEventArgs e)
         {
             if (dpStartDate.SelectedDate == null || dpEndDate.SelectedDate == null)
             {
-                MessageBox.Show("Будь ласка, вкажіть період для звіту", "Помилка",
+                MessageBox.Show(Strings.Get("Error_SelectPeriod"), Strings.Get("Error_Title"),
                     MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (dpStartDate.SelectedDate > dpEndDate.SelectedDate)
             {
-                MessageBox.Show("Дата початку не може бути пізніше дати завершення", "Помилка",
+                MessageBox.Show(Strings.Get("Error_DateOrder"), Strings.Get("Error_Title"),
                     MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
@@ -57,15 +76,10 @@ namespace HotelServices.Dialogs
                     dpEndDate.SelectedDate.Value);
 
                 reportDataGrid.ItemsSource = reportData;
-
-                MessageBox.Show($"Звіт по {GetResourceTypeName(_resourceType)} за період з " +
-                    $"{dpStartDate.SelectedDate.Value.ToShortDateString()} по " +
-                    $"{dpEndDate.SelectedDate.Value.ToShortDateString()} сформовано",
-                    "Звіт", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Помилка при формуванні звіту: {ex.Message}", "Помилка",
+                MessageBox.Show($"{Strings.Get("Error_ReportGen")}: {ex.Message}", Strings.Get("Error_Title"),
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -74,7 +88,7 @@ namespace HotelServices.Dialogs
         {
             if (reportDataGrid.Items.Count == 0)
             {
-                MessageBox.Show("Немає даних для експорту", "Попередження",
+                MessageBox.Show(Strings.Get("Error_NoData"), Strings.Get("Warning_Title"),
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
@@ -84,27 +98,26 @@ namespace HotelServices.Dialogs
                 var saveFileDialog = new SaveFileDialog
                 {
                     Filter = "PDF files (*.pdf)|*.pdf",
-                    Title = "Зберегти звіт як PDF",
-                    FileName = $"Звіт_{_resourceType}_{DateTime.Now:yyyyMMdd_HHmmss}.pdf"
+                    Title = Strings.Get("Pdf_SaveTitle"),
+                    FileName = $"Report_{_resourceType}_{DateTime.Now:yyyyMMdd_HHmmss}.pdf"
                 };
 
                 if (saveFileDialog.ShowDialog() == true)
                 {
                     GeneratePdfReport(saveFileDialog.FileName);
-                    MessageBox.Show("Звіт успішно експортовано до PDF", "Успіх",
+                    MessageBox.Show(Strings.Get("Pdf_Success"), Strings.Get("Success_Title"),
                         MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Помилка при експорті в PDF: {ex.Message}", "Помилка",
+                MessageBox.Show($"{Strings.Get("Error_PdfExport")}: {ex.Message}", Strings.Get("Error_Title"),
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void GeneratePdfReport(string filePath)
         {
-            // Install a font that supports Cyrillic (Arial Unicode MS or another font)
             string fontPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Fonts), "times.ttf");
             BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             Font font = new Font(baseFont, 10);
@@ -119,36 +132,23 @@ namespace HotelServices.Dialogs
                 PdfWriter.GetInstance(document, stream);
                 document.Open();
 
-                //  Report title in English
                 var title = new Paragraph($"Report for {GetResourceTypeNameEnglish(_resourceType)}", fontTitle);
                 title.Alignment = Element.ALIGN_CENTER;
                 document.Add(title);
 
-                //Reporting period
                 var period = new Paragraph($"Period: from {dpStartDate.SelectedDate.Value:dd.MM.yyyy} to {dpEndDate.SelectedDate.Value:dd.MM.yyyy}", font);
                 period.Alignment = Element.ALIGN_CENTER;
                 document.Add(period);
 
                 document.Add(new Paragraph("\n"));
 
-                // Table of data
-                PdfPTable table = new PdfPTable(6); // 6 columns
+                PdfPTable table = new PdfPTable(6);
                 table.WidthPercentage = 100;
                 float[] columnWidths = new float[] { 0.5f, 1.5f, 2f, 2f, 1.5f, 1.5f };
                 table.SetWidths(columnWidths);
 
-                //  English column headers
-                string[] columnHeaders = new string[]
-                {
-            "#",
-            "Status",
-            "Start Date",
-            "End Date",
-            "Duration (h)",
-            "Income (UAH)"
-                };
+                string[] columnHeaders = { "#", "Status", "Start Date", "End Date", "Duration (h)", "Income (UAH)" };
 
-                // Add headings
                 foreach (var headerText in columnHeaders)
                 {
                     var header = new PdfPCell(new Phrase(headerText, fontHeader));
@@ -158,7 +158,6 @@ namespace HotelServices.Dialogs
                     table.AddCell(header);
                 }
 
-                //  Data from the table
                 int rowNumber = 1;
                 foreach (var item in reportDataGrid.Items)
                 {
@@ -175,14 +174,12 @@ namespace HotelServices.Dialogs
 
                 document.Add(table);
 
-                // Summary in English
                 document.Add(new Paragraph("\n"));
                 var totalIncome = reportDataGrid.Items.Cast<Resource>().Sum(r => r.TotalIncome);
                 var summary = new Paragraph($"Total income: {totalIncome:N2} UAH", fontSummary);
                 summary.Alignment = Element.ALIGN_RIGHT;
                 document.Add(summary);
 
-                // Footer
                 var footer = new Paragraph($"Report generated: {DateTime.Now:dd.MM.yyyy HH:mm}", font);
                 footer.Alignment = Element.ALIGN_RIGHT;
                 document.Add(footer);
@@ -214,12 +211,12 @@ namespace HotelServices.Dialogs
         {
             switch (type)
             {
-                case ResourceType.Apartment: return "апартаментам";
-                case ResourceType.ConferenceRoom: return "конференц-залам";
-                case ResourceType.ParkingSpace: return "паркомісцям";
-                case ResourceType.RestaurantTable: return "ресторанним столам";
-                case ResourceType.AdditionalService: return "додатковим послугам";
-                default: return "ресурсам";
+                case ResourceType.Apartment: return Strings.Get("ResType_Apartment");
+                case ResourceType.ConferenceRoom: return Strings.Get("ResType_Conference");
+                case ResourceType.ParkingSpace: return Strings.Get("ResType_Parking");
+                case ResourceType.RestaurantTable: return Strings.Get("ResType_Restaurant");
+                case ResourceType.AdditionalService: return Strings.Get("ResType_Services");
+                default: return Strings.Get("ResType_Default");
             }
         }
     }
