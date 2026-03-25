@@ -417,23 +417,11 @@ namespace HotelServices.Services
             {
                 connection.Open();
 
-                string query = @"
-        SELECT * FROM Resources 
-        WHERE Type = @Type 
-        AND (
-            (StartDate IS NOT NULL AND EndDate IS NOT NULL AND 
-             StartDate BETWEEN @StartDate AND @EndDate)
-            OR 
-            (Status = @ReservedStatus OR Status = @OccupiedStatus)
-        )";
+                string query = "SELECT * FROM Resources WHERE Type = @Type";
 
                 using (var command = new SQLiteCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@Type", (int)resourceType);
-                    command.Parameters.AddWithValue("@StartDate", startDate.ToString("o"));
-                    command.Parameters.AddWithValue("@EndDate", endDate.ToString("o"));
-                    command.Parameters.AddWithValue("@ReservedStatus", (int)ReservationStatus.Reserved);
-                    command.Parameters.AddWithValue("@OccupiedStatus", (int)ReservationStatus.Occupied);
 
                     using (var reader = command.ExecuteReader())
                     {
@@ -441,11 +429,15 @@ namespace HotelServices.Services
                         {
                             var resource = ReadResourceFromReader(reader);
 
-                            // Additional calculations for the report
                             if (resource.StartDate.HasValue && resource.EndDate.HasValue)
                             {
                                 resource.TotalIncome = CalculateIncome(resource);
                                 resource.OccupancyDuration = (resource.EndDate.Value - resource.StartDate.Value).TotalHours;
+                            }
+                            else
+                            {
+                                resource.TotalIncome = resource.Price;
+                                resource.OccupancyDuration = 0;
                             }
 
                             resources.Add(resource);

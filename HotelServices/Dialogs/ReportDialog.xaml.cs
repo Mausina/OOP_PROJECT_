@@ -88,7 +88,7 @@ namespace HotelServices.Dialogs
         {
             if (reportDataGrid.Items.Count == 0)
             {
-                MessageBox.Show(Strings.Get("Error_NoData"), Strings.Get("Warning_Title"),
+                MessageBox.Show("Немає даних для експорту", "Попередження",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
@@ -98,20 +98,20 @@ namespace HotelServices.Dialogs
                 var saveFileDialog = new SaveFileDialog
                 {
                     Filter = "PDF files (*.pdf)|*.pdf",
-                    Title = Strings.Get("Pdf_SaveTitle"),
+                    Title = "Зберегти звіт як PDF",
                     FileName = $"Report_{_resourceType}_{DateTime.Now:yyyyMMdd_HHmmss}.pdf"
                 };
 
                 if (saveFileDialog.ShowDialog() == true)
                 {
                     GeneratePdfReport(saveFileDialog.FileName);
-                    MessageBox.Show(Strings.Get("Pdf_Success"), Strings.Get("Success_Title"),
+                    MessageBox.Show("Звіт успішно експортовано до PDF", "Успіх",
                         MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"{Strings.Get("Error_PdfExport")}: {ex.Message}", Strings.Get("Error_Title"),
+                MessageBox.Show($"Помилка при експорті в PDF: {ex.Message}", "Помилка",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
