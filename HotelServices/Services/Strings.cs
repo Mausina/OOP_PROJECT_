@@ -119,6 +119,8 @@ namespace HotelServices.Services
             ["Window_Dashboard"]         = "Головна панель",
             ["Window_Login"]             = "HotelServices - Авторизація",
 
+            ["Pdf_Success"] = "Звіт успішно експортовано до PDF",
+            ["Success_Title"] = "Успіх",
 
             ["AdditionalInfo_Header"] = "Додаткова інформація",
             ["Field_Rooms"] = "Кількість кімнат:",
@@ -245,6 +247,9 @@ namespace HotelServices.Services
             ["Window_Dashboard"]         = "Main Panel",
             ["Window_Login"]             = "HotelServices - Login",
 
+
+            ["Pdf_Success"] = "Report successfully exported to PDF",
+            ["Success_Title"] = "Success",
 
             ["AdditionalInfo_Header"] = "Additional Information",
             ["Field_Rooms"] = "Number of rooms:",
