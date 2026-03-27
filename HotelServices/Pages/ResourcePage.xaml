@@ -199,8 +199,9 @@
             </Border.Effect>
 
             <DataGrid x:Name="resourcesGrid" 
-                      SelectionChanged="ResourcesGrid_SelectionChanged"
-                      Margin="5">
+                  SelectionChanged="ResourcesGrid_SelectionChanged"
+                  MouseDoubleClick="ResourcesGrid_DoubleClick"
+                  Margin="5">
                 <DataGrid.Columns>
                     <DataGridTextColumn x:Name="colId"     Header="ID"         Binding="{Binding Id}"    Width="Auto"/>
                     <DataGridTextColumn x:Name="colName"   Header="Назва"      Binding="{Binding Name}"  Width="*"/>

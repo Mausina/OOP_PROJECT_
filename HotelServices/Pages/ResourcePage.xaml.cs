@@ -167,6 +167,19 @@ namespace HotelServices.Pages
             ShowNotification("Фільтри скинуто");
         }
 
+
+        private void ResourcesGrid_DoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (resourcesGrid.SelectedItem is Resource selectedResource)
+            {
+                var dialog = new ResourceEditDialog(_resourceType, selectedResource);
+                if (dialog.ShowDialog() == true)
+                {
+                    _dataService.UpdateResource(dialog.Resource);
+                    LoadResources();
+                }
+            }
+        }
         private void ApplyFilters()
         {
             if (_resources == null) return;
