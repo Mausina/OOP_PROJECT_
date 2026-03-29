@@ -11,7 +11,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Заголовок з градієнтом -->
+        <!-- Header with a gradient -->
         <Border Grid.Row="0" Padding="20" CornerRadius="0,0,15,15"
                 Background="{StaticResource HeaderGradient}">
             <Grid>
@@ -45,7 +45,7 @@
             </Grid>
         </Border>
 
-        <!-- Основні кнопки з зображеннями -->
+        <!-- Main buttons with images -->
         <Border Grid.Row="1" 
                 Background="{StaticResource LightBackgroundColor}" 
                 Margin="20,15,20,15" 
@@ -55,7 +55,7 @@
             <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="15">
                 <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center">
 
-                    <!-- Апартаменти -->
+                    <!-- Apartments -->
                     <Button x:Name="btnApartments"
                             Style="{StaticResource GradientButtonStyle}" 
                             Click="NavigateToApartments"
@@ -83,7 +83,7 @@
                         </Grid>
                     </Button>
 
-                    <!-- Конференц-зали -->
+                    <!-- Conference Rooms -->
                     <Button x:Name="btnConference"
                             Style="{StaticResource GradientButtonStyle}" 
                             Click="NavigateToConferenceRooms"
@@ -111,7 +111,7 @@
                         </Grid>
                     </Button>
 
-                    <!-- Паркомісця -->
+                    <!-- Parking spaces -->
                     <Button x:Name="btnParking"
                             Style="{StaticResource GradientButtonStyle}" 
                             Click="NavigateToParking"
@@ -139,7 +139,7 @@
                         </Grid>
                     </Button>
 
-                    <!-- Ресторан -->
+                    <!-- Restaurant -->
                     <Button x:Name="btnRestaurant"
                             Style="{StaticResource GradientButtonStyle}" 
                             Click="NavigateToRestaurant"
@@ -167,7 +167,7 @@
                         </Grid>
                     </Button>
 
-                    <!-- Додаткові послуги -->
+                    <!-- Additional Services -->
                     <Button x:Name="btnServices"
                             Style="{StaticResource GradientButtonStyle}" 
                             Click="NavigateToServices"
@@ -195,7 +195,7 @@
                         </Grid>
                     </Button>
 
-                    <!-- Управління користувачами -->
+                    <!-- User Management -->
                     <Button x:Name="btnUserManagement"
                             Style="{StaticResource GradientButtonStyle}" 
                             Click="NavigateToUserManagement"
@@ -227,7 +227,7 @@
             </ScrollViewer>
         </Border>
 
-        <!-- Статус-бар та зображення внизу сторінки -->
+        <!-- Status bar and image at the bottom of the page -->
         <Border Grid.Row="2" 
                 BorderBrush="{StaticResource BorderColor}" 
                 BorderThickness="0,1,0,0" 
