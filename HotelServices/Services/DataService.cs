@@ -266,7 +266,27 @@ namespace HotelServices.Services
 
             return null;
         }
+        public List<Resource> GetAllResources()
+        {
+            var resources = new List<Resource>();
 
+            using (var connection = new SQLiteConnection(_connectionString))
+            {
+                connection.Open();
+                string query = "SELECT * FROM Resources";
+
+                using (var command = new SQLiteCommand(query, connection))
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        resources.Add(ReadResourceFromReader(reader));
+                    }
+                }
+            }
+
+            return resources;
+        }
         public void AddResource(Resource resource)
         {
             using (var connection = new SQLiteConnection(_connectionString))

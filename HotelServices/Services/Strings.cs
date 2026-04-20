@@ -130,10 +130,33 @@ namespace HotelServices.Services
             ["Field_TableNumber"] = "Номер столу:",
             ["Field_Guests"] = "Кількість гостей:",
             ["Field_ServiceType"] = "Тип послуги:",
+
+            // Statistics
+            ["Stats_Title"] = "Статистика",
+            ["Stats_From"] = "Період з:",
+            ["Stats_To"] = "по:",
+            ["Stats_Refresh"] = "Оновити",
+            ["Stats_TopTitle"] = "Топ-5 найприбутковіших ресурсів",
+            ["Stats_Type"] = "Тип",
+            ["Dashboard_Statistics"] = "Статистика",
+            ["Dashboard_Statistics_Sub"] = "Аналітика та звіти",
+            ["Tooltip_Statistics"] = "Переглянути статистику",
         };
 
         private static readonly Dictionary<string, string> EN = new Dictionary<string, string>
         {
+
+            // Statistics
+            ["Stats_Title"] = "Statistics",
+            ["Stats_From"] = "From:",
+            ["Stats_To"] = "To:",
+            ["Stats_Refresh"] = "Refresh",
+            ["Stats_TopTitle"] = "Top 5 Most Profitable Resources",
+            ["Stats_Type"] = "Type",
+            ["Dashboard_Statistics"] = "Statistics",
+            ["Dashboard_Statistics_Sub"] = "Analytics and reports",
+            ["Tooltip_Statistics"] = "View statistics",
+
             // MainWindow (Login)
             ["Login_Title"]              = "Authorization",
             ["Login_Username"]           = "Login:",

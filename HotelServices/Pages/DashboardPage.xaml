@@ -194,7 +194,33 @@
                             </StackPanel>
                         </Grid>
                     </Button>
-
+                    <!-- Statistics -->
+                    <Button x:Name="btnStatistics"
+                Style="{StaticResource GradientButtonStyle}"
+                Click="NavigateToStatistics"
+                Margin="12"
+                Width="280"
+                Height="180"
+                ToolTip="Переглянути статистику">
+                                <Grid>
+                                    <StackPanel>
+                                        <Border Width="90" Height="90" Margin="0,5,0,5">
+                                            <TextBlock Text="📊" FontSize="60"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBlock x:Name="lblStatistics" Text="Статистика"
+                           FontSize="17"
+                           FontWeight="SemiBold"
+                           HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="lblStatisticsSub" Text="Аналітика та звіти"
+                           FontSize="13"
+                           HorizontalAlignment="Center"
+                           Margin="0,5,0,0"
+                           Foreground="{StaticResource MutedTextColor}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Button>
                     <!-- User Management -->
                     <Button x:Name="btnUserManagement"
                             Style="{StaticResource GradientButtonStyle}" 

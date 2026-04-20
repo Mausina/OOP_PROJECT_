@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Threading;
 
 namespace HotelServices.Pages
 {
@@ -14,7 +13,7 @@ namespace HotelServices.Pages
         private readonly User _currentUser;
         private readonly DataService _dataService;
         private readonly LanguageService _lang = LanguageService.Instance;
-        private List<User> _users;
+        private List<User> _users = new List<User>();
 
         public UserManagementPage(User currentUser)
         {
@@ -30,27 +29,26 @@ namespace HotelServices.Pages
 
         private void ApplyLanguage()
         {
-            lblPageTitle.Text      = Strings.Get("Dashboard_Users");
-            btnAddUser.Content     = Strings.Get("Btn_AddUser");
-            btnEdit.Content        = Strings.Get("Btn_Edit");
-            btnDelete.Content      = Strings.Get("Btn_Delete");
-            btnBack.Content        = Strings.Get("Btn_Back");
+            lblPageTitle.Text = Strings.Get("Dashboard_Users");
+            btnAddUser.Content = Strings.Get("Btn_AddUser");
+            btnEdit.Content = Strings.Get("Btn_Edit");
+            btnDelete.Content = Strings.Get("Btn_Delete");
+            btnBack.Content = Strings.Get("Btn_Back");
             btnResetFilters.Content = Strings.Get("Btn_ResetFilters");
 
             PlaceholderTextBlock.Text = Strings.Get("Placeholder_Search");
 
             cmbAllRoles.Content = Strings.Get("Filter_AllRoles");
-            cmbAdmin.Content    = Strings.Get("Filter_Admin");
-            cmbManager.Content  = Strings.Get("Filter_Manager");
+            cmbAdmin.Content = Strings.Get("Filter_Admin");
+            cmbManager.Content = Strings.Get("Filter_Manager");
 
             colUsername.Header = Strings.Get("Col_Username");
             colFullName.Header = Strings.Get("Col_FullName");
-            colRole.Header     = Strings.Get("Col_Role");
+            colRole.Header = Strings.Get("Col_Role");
         }
 
         private void BackToMain_Click(object sender, RoutedEventArgs e)
         {
-            AnimateButtonClick(sender as Button);
             if (Window.GetWindow(this) is DashboardWindow dashboard)
             {
                 dashboard.mainFrame.Navigate(new DashboardPage(_currentUser));
@@ -59,64 +57,92 @@ namespace HotelServices.Pages
 
         private void LoadUsers()
         {
-            _users = _dataService.GetAllUsers();
-            if (_users == null) _users = new List<User>();
-            usersGrid.ItemsSource = _users;
+            try
+            {
+                _users = _dataService.GetAllUsers() ?? new List<User>();
+                usersGrid.ItemsSource = _users;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load users: {ex.Message}",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void AddUser(object sender, RoutedEventArgs e)
         {
-            AnimateButtonClick(sender as Button);
             var dialog = new UserEditDialog(null);
             if (dialog.ShowDialog() == true)
             {
-                _dataService.AddUser(dialog.User);
-                LoadUsers();
-                ShowNotification("Користувача успішно додано");
+                try
+                {
+                    _dataService.AddUser(dialog.User);
+                    LoadUsers();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Failed to add user: {ex.Message}",
+                        "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 
         private void EditUser(object sender, RoutedEventArgs e)
         {
-            AnimateButtonClick(sender as Button);
             if (usersGrid.SelectedItem is User selectedUser)
             {
                 var dialog = new UserEditDialog(selectedUser);
                 if (dialog.ShowDialog() == true)
                 {
-                    _dataService.UpdateUser(dialog.User);
-                    LoadUsers();
-                    ShowNotification("Дані користувача успішно оновлено");
+                    try
+                    {
+                        _dataService.UpdateUser(dialog.User);
+                        LoadUsers();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Failed to update user: {ex.Message}",
+                            "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
             }
             else
             {
-                ShowWarning("Будь ласка, виберіть користувача для редагування");
+                MessageBox.Show("Please select a user to edit",
+                    "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
         private void DeleteUser(object sender, RoutedEventArgs e)
         {
-            AnimateButtonClick(sender as Button);
             if (usersGrid.SelectedItem is User selectedUser)
             {
                 if (selectedUser.Id == _currentUser.Id)
                 {
-                    ShowWarning("Ви не можете видалити самого себе");
+                    MessageBox.Show("You cannot delete yourself",
+                        "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
-                if (MessageBox.Show("Ви впевнені, що хочете видалити цього користувача?", "Підтвердження",
+                if (MessageBox.Show("Are you sure you want to delete this user?", "Confirm",
                     MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
-                    _dataService.DeleteUser(selectedUser.Id);
-                    LoadUsers();
-                    ShowNotification("Користувача успішно видалено");
+                    try
+                    {
+                        _dataService.DeleteUser(selectedUser.Id);
+                        LoadUsers();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Failed to delete user: {ex.Message}",
+                            "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
             }
             else
             {
-                ShowWarning("Будь ласка, виберіть користувача для видалення");
+                MessageBox.Show("Please select a user to delete",
+                    "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -137,18 +163,16 @@ namespace HotelServices.Pages
 
         private void ResetFilters_Click(object sender, RoutedEventArgs e)
         {
-            AnimateButtonClick(sender as Button);
             SearchTextBox.Text = string.Empty;
             RoleFilterComboBox.SelectedIndex = 0;
             ApplyFilters();
-            ShowNotification("Фільтри скинуто");
         }
 
         private void ApplyFilters()
         {
             if (_users == null) return;
 
-            var filtered = _users.AsEnumerable();
+            IEnumerable<User> filtered = _users;
 
             if (!string.IsNullOrEmpty(SearchTextBox.Text))
             {
@@ -166,18 +190,6 @@ namespace HotelServices.Pages
             }
 
             usersGrid.ItemsSource = filtered.ToList();
-        }
-
-        private void AnimateButtonClick(Button button)
-        {
-            if (button == null) return;
-        }
-
-        private void ShowNotification(string message) { }
-
-        private void ShowWarning(string message)
-        {
-            MessageBox.Show(message, "Попередження", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 }

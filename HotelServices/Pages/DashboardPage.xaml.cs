@@ -31,6 +31,11 @@ namespace HotelServices.Pages
 
         private void ApplyLanguage()
         {
+
+            lblStatistics.Text = Strings.Get("Dashboard_Statistics");
+            lblStatisticsSub.Text = Strings.Get("Dashboard_Statistics_Sub");
+            btnStatistics.ToolTip = Strings.Get("Tooltip_Statistics");
+
             lblDashTitle.Text         = Strings.Get("Dashboard_Title");
             lblDashSubtitle.Text      = Strings.Get("Dashboard_Subtitle");
 
@@ -84,7 +89,11 @@ namespace HotelServices.Pages
             if (sender is Button button) AnimateButtonClick(button);
             NavigationService.Navigate(new ResourcePage(ResourceType.RestaurantTable, _currentUser));
         }
-
+        private void NavigateToStatistics(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button) AnimateButtonClick(button);
+            NavigationService.Navigate(new StatisticsPage(_currentUser));
+        }
         private void NavigateToServices(object sender, RoutedEventArgs e)
         {
             if (sender is Button button) AnimateButtonClick(button);
